@@ -10,11 +10,12 @@ namespace Satbayev.University.DAL
 {
     public class Repository
     {
-        public bool CreatQuestions(QuestionTemplate question) 
+        private string Path = @"C\Temp\SatbayevUniversityDAL.db";
+        public bool CreatQuestions(QuestionTemplate question)
         {
             try
             {
-                using (var db = new LiteDatabase(""))
+                using (var db = new LiteDatabase(Path))
                 {
                     var col = db.GetCollection<QuestionTemplate>("QuestionTemplate");
                     col.Insert(question);
@@ -22,39 +23,39 @@ namespace Satbayev.University.DAL
 
                 return true;
             }
-            
+
             catch (Exception)
             {
-            
+
                 return false;
             }
         }
-        public bool UpdateQuestion(QuestionTemplate question) 
-        { 
-            try
-            {
-                using (var db = new LiteDatabase(""))
-                {
-                    var col = (db.GetCollection<QuestionTemplate>());
-                        col.Update(question);
-                }
-                return true;
-            }
-            catch 
-            { 
-                return false; 
-            }
-        }
-        public bool DeleteQuestion(int questionId) 
+        public bool UpdateQuestion(QuestionTemplate question)
         {
             try
             {
-                using (var db = new LiteDatabase(""))
+                using (var db = new LiteDatabase(Path))
+                {
+                    var col = (db.GetCollection<QuestionTemplate>());
+                    col.Update(question);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool DeleteQuestion(int questionId)
+        {
+            try
+            {
+                using (var db = new LiteDatabase(Path))
                 {
                     var col = db.GetCollection<QuestionTemplate>();
                     col.Delete(questionId);
                     return true;
-                }               
+                }
             }
             catch (Exception)
             {
@@ -65,7 +66,7 @@ namespace Satbayev.University.DAL
         {
             try
             {
-                using (var db = new LiteDatabase(""))
+                using (var db = new LiteDatabase(Path))
                 {
                     var col = db.GetCollection<QuestionTemplate>("QuestionTemplate");
                     return col.FindAll().ToList();
@@ -74,10 +75,30 @@ namespace Satbayev.University.DAL
             }
             catch (Exception)
             {
-
-                throw;
+                return null;
             }
         }
-    }
+        public List<QuestionTemplate> GetQuestionsByCategoryId(int id)
+        {
+            try
+            {
+                using (var db = new LiteDatabase(Path))
+                {
+                    var col = db.GetCollection<QuestionTemplate>("QuestionTemplate").
+                         FindAll()
+                         .Where(w => w.categoryId == id).ToList();
+                    return col;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
+
+        }
+        
+        
+
+    }
 }
